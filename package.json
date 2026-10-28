@@ -1,0 +1,13 @@
+{
+  "name": "mundo-de-bloques",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --open",
+    "build": "vite build"
+  },
+  "dependencies": {
+    "three": "^0.186.1",
+    "vite": "^6.4.5"
+  }
+}

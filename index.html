@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mundo de Bloques</title>
+    <style>
+      html, body { margin: 0; height: 100%; overflow: hidden; background: #87ceeb; }
+      body { font-family: "Trebuchet MS", "Arial Rounded MT Bold", sans-serif; user-select: none; }
+      canvas { display: block; cursor: grab; }
+      canvas:active { cursor: grabbing; }
+      .hud {
+        position: fixed; left: 16px; color: #fff; font-weight: bold;
+        text-shadow: 0 2px 0 rgba(0, 0, 0, 0.35); pointer-events: none;
+      }
+      #titulo { top: 12px; font-size: 32px; }
+      #ayuda {
+        bottom: 12px; font-size: 16px; background: rgba(0, 0, 0, 0.35);
+        padding: 8px 12px; border-radius: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="titulo" class="hud">🧱 Mundo de Bloques</div>
+    <div id="ayuda" class="hud">
+      ⬆️⬇️⬅️➡️ o WASD: caminar · Espacio: saltar · Shift: correr · Arrastra el mouse o Q/E: girar la cámara
+    </div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
