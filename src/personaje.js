@@ -2,6 +2,7 @@
 import * as THREE from "three";
 import { CONFIG } from "./config.js";
 import { colorReal } from "./colores.js";
+import { sonido } from "./sonido.js";
 
 const ALTO = 3.2; // de los pies a la cabeza, en bloques
 const MEDIO_ANCHO = 0.6;
@@ -84,13 +85,17 @@ export class Personaje {
     this.velocidad.y -= CONFIG.gravedad * dt;
     if (entrada.saltar && this.enSuelo) {
       this.velocidad.y = Math.sqrt(2 * CONFIG.gravedad * CONFIG.alturaSalto);
+      sonido.salto();
     }
 
     // 3. Lo movemos poco a poco, revisando si choca con algo
+    const estabaEnSuelo = this.enSuelo;
+    const velocidadDeCaida = this.velocidad.y;
     this.enSuelo = false;
     this.moverEje("x", this.velocidad.x * dt, solidos);
     this.moverEje("z", this.velocidad.z * dt, solidos);
     this.moverEje("y", this.velocidad.y * dt, solidos);
+    if (!estabaEnSuelo && this.enSuelo && velocidadDeCaida < -12) sonido.aterrizar();
 
     // 4. Si se cae del mundo, regresa al inicio
     if (this.posicion.y < -30) this.reaparecer();
@@ -140,7 +145,9 @@ export class Personaje {
     if (!this.enSuelo) {
       metas = [0.4, -0.2, -2.8, -2.8]; // ¡brazos arriba al saltar!
     } else if (rapidez > 0) {
+      const pasoAnterior = Math.floor(this.pasos / Math.PI);
       this.pasos += dt * rapidez * 1.2;
+      if (Math.floor(this.pasos / Math.PI) !== pasoAnterior) sonido.paso(this.escala);
       const paso = Math.sin(this.pasos) * 0.9;
       metas = [paso, -paso, -paso, paso];
     }
@@ -153,5 +160,6 @@ export class Personaje {
   reaparecer() {
     this.posicion.copy(this.inicio);
     this.velocidad.set(0, 0, 0);
+    sonido.reaparecer();
   }
 }

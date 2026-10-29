@@ -4,6 +4,8 @@ import { crearMundo, solidos } from "./mundo.js";
 import { Personaje } from "./personaje.js";
 import { Camara } from "./camara.js";
 import { leerEntrada } from "./controles.js";
+import { iniciarSonido, alternarSilencio } from "./sonido.js";
+import { iniciarMusica } from "./musica.js";
 
 // El "pintor" que dibuja el juego en la pantalla
 const pintor = new THREE.WebGLRenderer({ antialias: true });
@@ -21,6 +23,19 @@ const camara = new Camara(pintor.domElement);
 addEventListener("resize", () => {
   pintor.setSize(innerWidth, innerHeight);
   camara.ajustarPantalla();
+});
+
+// 🔊 El sonido arranca con la primera tecla o clic; la M lo silencia
+function activarSonido() {
+  if (iniciarSonido()) {
+    iniciarMusica();
+    document.getElementById("avisoSonido").remove();
+  }
+}
+addEventListener("keydown", activarSonido);
+addEventListener("pointerdown", activarSonido);
+addEventListener("keydown", (e) => {
+  if (e.code === "KeyM") alternarSilencio();
 });
 
 // 🔁 El ciclo del juego: se repite unas 60 veces por segundo

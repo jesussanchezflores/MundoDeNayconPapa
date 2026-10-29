@@ -14,6 +14,7 @@
         text-shadow: 0 2px 0 rgba(0, 0, 0, 0.35); pointer-events: none;
       }
       #titulo { top: 12px; font-size: 32px; }
+      #avisoSonido { top: 56px; font-size: 18px; }
       #ayuda {
         bottom: 12px; font-size: 16px; background: rgba(0, 0, 0, 0.35);
         padding: 8px 12px; border-radius: 10px;
@@ -23,8 +24,9 @@
   <body>
     <div id="titulo" class="hud">🧱 Mundo de Bloques</div>
     <div id="ayuda" class="hud">
-      ⬆️⬇️⬅️➡️ o WASD: caminar · Espacio: saltar · Shift: correr · Arrastra el mouse o Q/E: girar la cámara
+      ⬆️⬇️⬅️➡️ o WASD: caminar · Espacio: saltar · Shift: correr · Arrastra el mouse o Q/E: girar la cámara · M: silenciar
     </div>
+    <div id="avisoSonido" class="hud">🔊 Toca cualquier tecla para activar el sonido</div>
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>

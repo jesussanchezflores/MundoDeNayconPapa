@@ -8,7 +8,7 @@ export const CONFIG = {
   colorCamisa: "rojo",
   colorPantalon: "azul",
   colorPiel: "amarillo",
-  tamañoPersonaje: 1, // 1 = normal, 3 = ¡gigante!, 0.5 = chiquito
+  tamañoPersonaje: 3, // 1 = normal, 3 = ¡gigante!, 0.5 = chiquito
   velocidad: 8, // qué tan rápido camina
   alturaSalto: 4, // cuántos bloques de alto puede saltar
 
@@ -17,4 +17,11 @@ export const CONFIG = {
   colorCielo: "celeste",
   colorPasto: "verde",
   esDeNoche: false, // true = de noche, false = de día
+
+  // 🔊 Sonido y música
+  musica: "misterio", // "alegre", "aventura", "tranquila", "espacial", "misterio" o "ninguna"
+  volumenMusica: 0.5, // de 0 (calladita) a 1 (fuerte)
+  efectosDeSonido: true, // ¿suena al saltar y al caer?
+  sonidoDePasos: true, // ¿se oyen los pasos al caminar?
+  volumenEfectos: 0.8, // de 0 a 1
 };
