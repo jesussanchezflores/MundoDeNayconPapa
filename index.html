@@ -15,6 +15,14 @@
       }
       #titulo { top: 12px; font-size: 32px; }
       #avisoSonido { top: 56px; font-size: 18px; }
+      #marcador { left: auto; right: 16px; top: 12px; font-size: 28px; white-space: pre; }
+      #mensaje {
+        display: none; left: 50%; top: 30%; transform: translate(-50%, -50%);
+        font-size: 48px; text-align: center; line-height: 1.3;
+        background: rgba(0, 0, 0, 0.45); padding: 20px 36px; border-radius: 20px;
+      }
+      #mensaje small { font-size: 22px; }
+      #destello { inset: 0; left: 0; background: #ff3d00; opacity: 0; }
       #ayuda {
         bottom: 12px; font-size: 16px; background: rgba(0, 0, 0, 0.35);
         padding: 8px 12px; border-radius: 10px;
@@ -22,11 +30,14 @@
     </style>
   </head>
   <body>
-    <div id="titulo" class="hud">🧱 Mundo de Bloques</div>
+    <div id="titulo" class="hud">🧱 Mundo de Nay y de papá</div>
     <div id="ayuda" class="hud">
-      ⬆️⬇️⬅️➡️ o WASD: caminar · Espacio: saltar · Shift: correr · Arrastra el mouse o Q/E: girar la cámara · M: silenciar
+      ⬆️⬇️⬅️➡️ o WASD: caminar · Espacio: saltar · Shift: correr · Arrastra el mouse o Q/E: girar la cámara · M: silenciar · R: empezar de nuevo
     </div>
     <div id="avisoSonido" class="hud">🔊 Toca cualquier tecla para activar el sonido</div>
+    <div id="marcador" class="hud"></div>
+    <div id="mensaje" class="hud"></div>
+    <div id="destello" class="hud"></div>
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>

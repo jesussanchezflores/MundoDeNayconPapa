@@ -5,8 +5,8 @@
 
 export const CONFIG = {
   // 🧍 El personaje
-  colorCamisa: "rojo",
-  colorPantalon: "azul",
+  colorCamisa: "rosa",
+  colorPantalon: "morado",
   colorPiel: "amarillo",
   tamañoPersonaje: 3, // 1 = normal, 3 = ¡gigante!, 0.5 = chiquito
   velocidad: 8, // qué tan rápido camina
@@ -18,8 +18,13 @@ export const CONFIG = {
   colorPasto: "verde",
   esDeNoche: false, // true = de noche, false = de día
 
+  // 🏁 La pista de obstáculos
+  lavaQuema: true, // false = la lava ya no te regresa al checkpoint
+  colorLava: "naranja",
+  velocidadPlataformas: 1, // 2 = el doble de rápido, 0 = quietas
+
   // 🔊 Sonido y música
-  musica: "misterio", // "alegre", "aventura", "tranquila", "espacial", "misterio" o "ninguna"
+  musica: "alegre", // "alegre", "aventura", "tranquila", "espacial", "misterio" o "ninguna"
   volumenMusica: 0.5, // de 0 (calladita) a 1 (fuerte)
   efectosDeSonido: true, // ¿suena al saltar y al caer?
   sonidoDePasos: true, // ¿se oyen los pasos al caminar?

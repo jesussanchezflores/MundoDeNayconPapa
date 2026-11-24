@@ -17,10 +17,11 @@ export function crearMundo(escena) {
 }
 
 // Pone un bloque en el mundo. (x, z) es el centro y "y" es la altura de abajo.
-export function agregarBloque(escena, { x, y, z, ancho, alto, largo, color, solido = true }) {
+// "tipo" sirve para bloques especiales: "lava", "checkpoint" o "meta".
+export function agregarBloque(escena, { x, y, z, ancho, alto, largo, color, solido = true, tipo, material }) {
   const bloque = new THREE.Mesh(
     new THREE.BoxGeometry(ancho, alto, largo),
-    new THREE.MeshStandardMaterial({ color: colorReal(color) })
+    material ?? new THREE.MeshStandardMaterial({ color: colorReal(color) })
   );
   bloque.position.set(x, y + alto / 2, z);
   bloque.castShadow = true;
@@ -28,10 +29,12 @@ export function agregarBloque(escena, { x, y, z, ancho, alto, largo, color, soli
   escena.add(bloque);
 
   if (solido) {
-    solidos.push({
+    bloque.solido = {
       min: { x: x - ancho / 2, y, z: z - largo / 2 },
       max: { x: x + ancho / 2, y: y + alto, z: z + largo / 2 },
-    });
+      tipo,
+    };
+    solidos.push(bloque.solido);
   }
   return bloque;
 }
@@ -127,6 +130,7 @@ function crearArboles(escena) {
     const z = Math.round(azar() * 180 - 90);
     // Dejamos libre el centro, donde están las casas y la escalera
     if (Math.abs(x) < 24 && z > -40 && z < 16) continue;
+    if (x > 20 && Math.abs(z) < 20) continue; // ahí va la pista de obstáculos
     crearArbol(escena, x, z);
     plantados++;
   }

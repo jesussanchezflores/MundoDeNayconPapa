@@ -97,4 +97,32 @@ export const sonido = {
     if (!puedeSonar()) return;
     tono({ frecuencia: 200, hasta: 900, duracion: 0.4, onda: "triangle", volumen: 0.25 });
   },
+
+  moneda() {
+    if (!puedeSonar()) return;
+    const t = audio.currentTime;
+    tono({ frecuencia: 988, duracion: 0.08, onda: "square", volumen: 0.1, cuando: t });
+    tono({ frecuencia: 1319, duracion: 0.3, onda: "square", volumen: 0.1, cuando: t + 0.08 });
+  },
+
+  lava() {
+    if (!puedeSonar()) return;
+    ruido({ duracion: 0.5, volumen: 0.3, filtro: "highpass", frecuencia: 3000 }); // "¡tssss!"
+    tono({ frecuencia: 400, hasta: 90, duracion: 0.35, onda: "sawtooth", volumen: 0.1 });
+  },
+
+  checkpoint() {
+    if (!puedeSonar()) return;
+    [523, 659, 784].forEach((frecuencia, i) =>
+      tono({ frecuencia, duracion: 0.25, onda: "triangle", volumen: 0.3, cuando: audio.currentTime + i * 0.09 })
+    );
+  },
+
+  victoria() {
+    if (!puedeSonar()) return;
+    const notas = [[523, 0], [659, 0.12], [784, 0.24], [1047, 0.36], [784, 0.56], [1047, 0.68]];
+    for (const [frecuencia, retraso] of notas) {
+      tono({ frecuencia, duracion: retraso > 0.6 ? 0.8 : 0.2, onda: "square", volumen: 0.12, cuando: audio.currentTime + retraso });
+    }
+  },
 };

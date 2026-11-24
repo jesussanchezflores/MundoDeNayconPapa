@@ -6,6 +6,7 @@ import { Camara } from "./camara.js";
 import { leerEntrada } from "./controles.js";
 import { iniciarSonido, alternarSilencio } from "./sonido.js";
 import { iniciarMusica } from "./musica.js";
+import { crearObby, moverObstaculos, revisarJugador, reiniciarCarrera } from "./obby.js";
 
 // El "pintor" que dibuja el juego en la pantalla
 const pintor = new THREE.WebGLRenderer({ antialias: true });
@@ -17,6 +18,7 @@ document.body.appendChild(pintor.domElement);
 
 const escena = new THREE.Scene();
 const sol = crearMundo(escena);
+crearObby(escena);
 const jugador = new Personaje(escena, new THREE.Vector3(0, 0, 0));
 const camara = new Camara(pintor.domElement);
 
@@ -36,6 +38,7 @@ addEventListener("keydown", activarSonido);
 addEventListener("pointerdown", activarSonido);
 addEventListener("keydown", (e) => {
   if (e.code === "KeyM") alternarSilencio();
+  if (e.code === "KeyR") reiniciarCarrera(jugador);
 });
 
 // 🔁 El ciclo del juego: se repite unas 60 veces por segundo
@@ -45,7 +48,9 @@ pintor.setAnimationLoop(() => {
   const entrada = leerEntrada();
 
   camara.girar(entrada.girarCamara, dt);
+  moverObstaculos(dt, jugador);
   jugador.actualizar(dt, entrada, camara.angulo, solidos);
+  revisarJugador(dt, jugador);
   camara.seguir(jugador.posicion, jugador.alto, dt);
 
   // El sol sigue al jugador para que siempre haya sombras cerca

@@ -92,6 +92,7 @@ export class Personaje {
     const estabaEnSuelo = this.enSuelo;
     const velocidadDeCaida = this.velocidad.y;
     this.enSuelo = false;
+    this.pisando = null; // el bloque que tiene bajo los pies
     this.moverEje("x", this.velocidad.x * dt, solidos);
     this.moverEje("z", this.velocidad.z * dt, solidos);
     this.moverEje("y", this.velocidad.y * dt, solidos);
@@ -122,10 +123,13 @@ export class Personaje {
         if (distancia < 0) {
           p.y = b.max.y; // cayó encima de un bloque
           this.enSuelo = true;
+          this.pisando = b;
         } else {
           p.y = b.min.y - this.alto; // se pegó en la cabeza
         }
         this.velocidad.y = 0;
+      } else if (b.max.y - p.y < 0.3) {
+        p.y = b.max.y; // un escaloncito chiquito: se sube solo
       } else {
         // Chocó contra una pared: lo regresamos justo al borde
         p[eje] = distancia > 0 ? b.min[eje] - medio - 0.001 : b.max[eje] + medio + 0.001;
