@@ -5,12 +5,12 @@
 
 export const CONFIG = {
   // 🧍 El personaje
-  colorCamisa: "rosa",
-  colorPantalon: "morado",
+  colorCamisa: "rojo",
+  colorPantalon: "azul",
   colorPiel: "amarillo",
-  tamañoPersonaje: 10, // 1 = normal, 3 = ¡gigante!, 0.5 = chiquito
+  tamañoPersonaje: 1, // 1 = normal, 3 = ¡gigante!, 0.5 = chiquito
   velocidad: 8, // qué tan rápido camina
-  alturaSalto: 8, // cuántos bloques de alto puede saltar
+  alturaSalto: 4, // cuántos bloques de alto puede saltar
   superSalto: 2, // saltar dos veces rapidito salta esto veces más alto (1 = sin súper salto)
 
   // 🌍 El mundo
