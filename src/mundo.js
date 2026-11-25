@@ -2,6 +2,7 @@
 import * as THREE from "three";
 import { CONFIG } from "./config.js";
 import { colorReal } from "./colores.js";
+import { esMovil } from "./dispositivo.js";
 
 // Todos los bloques sólidos: los que el personaje NO puede atravesar
 export const solidos = [];
@@ -51,7 +52,8 @@ function crearCieloYLuces(escena) {
   const sol = new THREE.DirectionalLight(noche ? "#aab4ff" : "#ffffff", noche ? 0.7 : 2.2);
   sol.position.set(30, 50, 20);
   sol.castShadow = true;
-  sol.shadow.mapSize.set(2048, 2048);
+  const detalle = esMovil ? 1024 : 2048;
+  sol.shadow.mapSize.set(detalle, detalle);
   Object.assign(sol.shadow.camera, { left: -45, right: 45, top: 45, bottom: -45, far: 150 });
   escena.add(sol, sol.target);
 

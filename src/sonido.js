@@ -9,7 +9,10 @@ let ruidoBlanco = null;
 
 // Los navegadores solo dejan sonar algo después de tocar una tecla o el mouse
 export function iniciarSonido() {
-  if (audio) return false;
+  if (audio) {
+    if (audio.state === "suspended") audio.resume(); // a veces el celular lo pausa
+    return false;
+  }
   audio = new AudioContext();
 
   volumenGeneral = audio.createGain();
@@ -75,6 +78,12 @@ export const sonido = {
   salto() {
     if (!puedeSonar()) return;
     tono({ frecuencia: 320, hasta: 760, duracion: 0.18, onda: "square", volumen: 0.12 });
+  },
+
+  superSalto() {
+    if (!puedeSonar()) return;
+    tono({ frecuencia: 300, hasta: 1400, duracion: 0.35, onda: "square", volumen: 0.12 });
+    tono({ frecuencia: 600, hasta: 2400, duracion: 0.35, onda: "triangle", volumen: 0.1 });
   },
 
   aterrizar() {

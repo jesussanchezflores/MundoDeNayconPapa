@@ -10,17 +10,24 @@ export class Camara {
     this.distancia = 14;
     this.objetivo = new THREE.Vector3();
 
-    // Arrastrar el mouse gira la cámara
-    let arrastrando = false;
+    // Arrastrar el mouse (o un dedo en la pantalla) gira la cámara
+    let dedo = null;
+    let ultimo;
     lienzo.addEventListener("pointerdown", (e) => {
-      arrastrando = true;
+      if (dedo !== null) return;
+      dedo = e.pointerId;
+      ultimo = { x: e.clientX, y: e.clientY };
       lienzo.setPointerCapture(e.pointerId);
     });
-    lienzo.addEventListener("pointerup", () => (arrastrando = false));
+    const soltar = (e) => e.pointerId === dedo && (dedo = null);
+    lienzo.addEventListener("pointerup", soltar);
+    lienzo.addEventListener("pointercancel", soltar);
     lienzo.addEventListener("pointermove", (e) => {
-      if (!arrastrando) return;
-      this.angulo -= e.movementX * 0.006;
-      this.inclinacion = THREE.MathUtils.clamp(this.inclinacion + e.movementY * 0.006, 0.05, 1.3);
+      if (e.pointerId !== dedo) return;
+      const sensibilidad = e.pointerType === "touch" ? 0.009 : 0.006;
+      this.angulo -= (e.clientX - ultimo.x) * sensibilidad;
+      this.inclinacion = THREE.MathUtils.clamp(this.inclinacion + (e.clientY - ultimo.y) * sensibilidad, 0.05, 1.3);
+      ultimo = { x: e.clientX, y: e.clientY };
     });
     // La ruedita del mouse acerca o aleja
     lienzo.addEventListener("wheel", (e) => {

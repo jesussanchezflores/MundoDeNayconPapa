@@ -18,6 +18,9 @@ const COLORES = {
   dorado: "#ffc107",
 };
 
+// Los nombres que aparecen en el panel de ajustes
+export const NOMBRES_DE_COLORES = Object.keys(COLORES).filter((nombre) => nombre !== "verdeHoja");
+
 // Si el color no está en la lista (por ejemplo "#ff00ff"), lo usamos tal cual
 export function colorReal(nombre) {
   return COLORES[nombre] ?? nombre;

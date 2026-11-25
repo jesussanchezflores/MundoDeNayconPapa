@@ -16,6 +16,9 @@ export class Personaje {
     this.velocidad = new THREE.Vector3();
     this.enSuelo = false;
     this.pasos = 0;
+    this.tiempo = 0;
+    this.ultimoSalto = -1;
+    this.superSaltoUsado = true;
     this.modelo = this.construirModelo();
     escena.add(this.modelo);
   }
@@ -74,18 +77,26 @@ export class Personaje {
     const direccion = new THREE.Vector3()
       .addScaledVector(adelante, entrada.adelante)
       .addScaledVector(derecha, entrada.derecha);
-    const seMueve = direccion.lengthSq() > 0;
-    if (seMueve) direccion.normalize();
+    const seMueve = direccion.lengthSq() > 0.01;
+    if (direccion.lengthSq() > 1) direccion.normalize(); // con la palanca a medias, camina más lento
 
     const rapidez = CONFIG.velocidad * (entrada.correr ? 1.7 : 1);
     this.velocidad.x = direccion.x * rapidez;
     this.velocidad.z = direccion.z * rapidez;
 
     // 2. La gravedad lo jala hacia abajo; el salto lo empuja hacia arriba
+    this.tiempo += dt;
     this.velocidad.y -= CONFIG.gravedad * dt;
     if (entrada.saltar && this.enSuelo) {
       this.velocidad.y = Math.sqrt(2 * CONFIG.gravedad * CONFIG.alturaSalto);
+      this.ultimoSalto = this.tiempo;
+      this.superSaltoUsado = false;
       sonido.salto();
+    } else if (entrada.saltoNuevo && !this.superSaltoUsado && this.tiempo - this.ultimoSalto < 0.45) {
+      // ¡Saltar dos veces rapidito = súper salto!
+      this.velocidad.y = Math.sqrt(2 * CONFIG.gravedad * CONFIG.alturaSalto * CONFIG.superSalto);
+      this.superSaltoUsado = true;
+      sonido.superSalto();
     }
 
     // 3. Lo movemos poco a poco, revisando si choca con algo
@@ -104,7 +115,7 @@ export class Personaje {
     // 5. Acomodamos el modelo: posición, hacia dónde mira y la animación
     this.modelo.position.copy(this.posicion);
     if (seMueve) this.voltearHacia(Math.atan2(direccion.x, direccion.z), dt);
-    this.animar(dt, seMueve ? rapidez : 0);
+    this.animar(dt, seMueve ? rapidez * direccion.length() : 0);
   }
 
   moverEje(eje, distancia, solidos) {

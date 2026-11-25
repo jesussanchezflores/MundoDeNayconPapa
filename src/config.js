@@ -8,9 +8,10 @@ export const CONFIG = {
   colorCamisa: "rosa",
   colorPantalon: "morado",
   colorPiel: "amarillo",
-  tamañoPersonaje: 3, // 1 = normal, 3 = ¡gigante!, 0.5 = chiquito
+  tamañoPersonaje: 10, // 1 = normal, 3 = ¡gigante!, 0.5 = chiquito
   velocidad: 8, // qué tan rápido camina
-  alturaSalto: 4, // cuántos bloques de alto puede saltar
+  alturaSalto: 8, // cuántos bloques de alto puede saltar
+  superSalto: 2, // saltar dos veces rapidito salta esto veces más alto (1 = sin súper salto)
 
   // 🌍 El mundo
   gravedad: 30, // más gravedad = cae más rápido. ¡Prueba con 5 para saltar como en la Luna!

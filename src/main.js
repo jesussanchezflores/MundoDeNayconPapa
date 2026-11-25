@@ -7,10 +7,15 @@ import { leerEntrada } from "./controles.js";
 import { iniciarSonido, alternarSilencio } from "./sonido.js";
 import { iniciarMusica } from "./musica.js";
 import { crearObby, moverObstaculos, revisarJugador, reiniciarCarrera } from "./obby.js";
+import { aplicarAjustesGuardados, crearPanel, panelAbierto } from "./ajustes.js";
+import { esMovil } from "./dispositivo.js";
 
-// El "pintor" que dibuja el juego en la pantalla
+// Primero, lo que se haya elegido en el panel de ajustes ⚙️
+aplicarAjustesGuardados();
+
+// El "pintor" que dibuja el juego en la pantalla (en celular, un poco menos detallado para que vaya rápido)
 const pintor = new THREE.WebGLRenderer({ antialias: true });
-pintor.setPixelRatio(Math.min(devicePixelRatio, 2));
+pintor.setPixelRatio(Math.min(devicePixelRatio, esMovil ? 1.5 : 2));
 pintor.setSize(innerWidth, innerHeight);
 pintor.shadowMap.enabled = true;
 pintor.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -21,13 +26,14 @@ const sol = crearMundo(escena);
 crearObby(escena);
 const jugador = new Personaje(escena, new THREE.Vector3(0, 0, 0));
 const camara = new Camara(pintor.domElement);
+crearPanel({ alReiniciar: () => reiniciarCarrera(jugador) });
 
 addEventListener("resize", () => {
   pintor.setSize(innerWidth, innerHeight);
   camara.ajustarPantalla();
 });
 
-// 🔊 El sonido arranca con la primera tecla o clic; la M lo silencia
+// 🔊 El sonido arranca con la primera tecla, clic o toque; la M lo silencia
 function activarSonido() {
   if (iniciarSonido()) {
     iniciarMusica();
@@ -36,16 +42,20 @@ function activarSonido() {
 }
 addEventListener("keydown", activarSonido);
 addEventListener("pointerdown", activarSonido);
+addEventListener("touchend", activarSonido);
 addEventListener("keydown", (e) => {
+  if (panelAbierto()) return;
   if (e.code === "KeyM") alternarSilencio();
   if (e.code === "KeyR") reiniciarCarrera(jugador);
 });
 
 // 🔁 El ciclo del juego: se repite unas 60 veces por segundo
 const reloj = new THREE.Clock();
+const QUIETO = { adelante: 0, derecha: 0, saltar: false, saltoNuevo: false, correr: false, girarCamara: 0 };
 pintor.setAnimationLoop(() => {
   const dt = Math.min(reloj.getDelta(), 1 / 30);
-  const entrada = leerEntrada();
+  // Con el panel de ajustes abierto, el personaje se queda quieto
+  const entrada = panelAbierto() ? QUIETO : leerEntrada();
 
   camara.girar(entrada.girarCamara, dt);
   moverObstaculos(dt, jugador);
