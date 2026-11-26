@@ -24,6 +24,14 @@
         background: rgba(0, 0, 0, 0.45); padding: 20px 36px; border-radius: 20px;
       }
       #mensaje small { font-size: 22px; }
+      #mensaje .opciones { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin: 14px 0 6px; }
+      #mensaje .opciones button {
+        pointer-events: auto; font: inherit; font-size: 22px; font-weight: bold; color: #fff; cursor: pointer;
+        padding: 10px 18px; border-radius: 14px; border: 3px solid #fff; background: #2e9d4f;
+        box-shadow: 0 4px 0 rgba(0, 0, 0, 0.35); touch-action: manipulation;
+      }
+      #mensaje .opciones button[data-opcion="explorar"] { background: #1f6fd1; }
+      #mensaje .opciones button:active { transform: translateY(3px); box-shadow: 0 1px 0 rgba(0, 0, 0, 0.35); }
       #destello { inset: 0; left: 0; background: #ff3d00; opacity: 0; }
       #ayuda {
         bottom: 12px; font-size: 16px; background: rgba(0, 0, 0, 0.35);
@@ -128,6 +136,9 @@
       body.movil #marcador { font-size: 20px; top: 72px; right: 12px; }
       body.movil #mensaje { font-size: 28px; }
       body.movil #mensaje small { font-size: 16px; }
+      body.movil #mensaje { width: max-content; max-width: calc(100vw - 32px); padding: 16px 20px; }
+      body.movil #mensaje .opciones button { font-size: 18px; padding: 10px 14px; white-space: nowrap; }
+      body.movil .soloPC { display: none; }
       /* El tamaño se adapta a la pantalla: más chicos con el celular acostado */
       :root { --palanca: clamp(84px, 26vmin, 140px); --salto: clamp(60px, 18vmin, 96px); --orilla: clamp(12px, 4vmin, 28px); }
       #palanca {

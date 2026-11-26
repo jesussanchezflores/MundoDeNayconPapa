@@ -185,7 +185,20 @@ function ganar(jugador) {
   corriendo = false;
   sonido.victoria();
   lanzarConfeti(jugador.posicion);
-  mostrarMensaje(`🏆 ¡GANASTE!<br>⏱️ ${formatoTiempo(tiempoDeCarrera)} · 🪙 ${monedasAgarradas} de ${monedas.length}<br><small>Presiona R para jugar otra vez</small>`);
+  mostrarMensaje(
+    `🏆 ¡GANASTE!<br>⏱️ ${formatoTiempo(tiempoDeCarrera)} · 🪙 ${monedasAgarradas} de ${monedas.length}` +
+    `<div class="opciones">` +
+    `<button data-opcion="otraVez">🔁 Jugar otra vez</button>` +
+    `<button data-opcion="explorar">🌍 Seguir explorando</button>` +
+    `</div><small class="soloPC">o presiona R para jugar otra vez</small>`
+  );
+  // Los botones sirven con el mouse y con el dedo (en el celular no hay tecla R)
+  mensaje.onclick = (e) => {
+    const opcion = e.target.closest("button")?.dataset.opcion;
+    if (opcion === "otraVez") reiniciarCarrera(jugador);
+    if (opcion === "explorar") ocultarMensaje();
+    e.target.blur?.();
+  };
 }
 
 // Todo de vuelta como al principio (tecla R)
