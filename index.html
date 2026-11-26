@@ -6,7 +6,8 @@
     <meta name="theme-color" content="#87ceeb" />
     <title>Mundo de Nay y de papá</title>
     <style>
-      html, body { margin: 0; height: 100%; overflow: hidden; background: #87ceeb; }
+      html, body { margin: 0; height: 100%; overflow: hidden; overscroll-behavior: none; background: #87ceeb; }
+      body { position: fixed; inset: 0; }
       body { font-family: "Trebuchet MS", "Arial Rounded MT Bold", sans-serif; user-select: none; }
       canvas { display: block; cursor: grab; touch-action: none; }
       canvas:active { cursor: grabbing; }
@@ -63,13 +64,54 @@
       }
       #panel .botones button[data-accion="aplicar"] { background: #43a047; color: #fff; font-weight: bold; }
 
+      #panel .encabezado {
+        display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 16px 20px 8px;
+      }
+      #panel .encabezado h2 { padding: 0; }
+      #botonIdeas {
+        flex-shrink: 0; font-size: 14px; padding: 8px 12px; border: 0; border-radius: 999px;
+        background: #fff3c4; color: #5d4300; font-weight: bold;
+      }
+
+      /* 💡 Formulario de ideas */
+      #ideas {
+        width: min(460px, calc(100vw - 32px)); max-height: calc(100dvh - 32px); padding: 0; border: 0;
+        border-radius: 20px; background: #fff; color: #222; overflow: auto; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+      }
+      #ideas::backdrop { background: rgba(0, 0, 0, 0.5); }
+      #ideas form, #ideas .gracias { position: relative; padding: 22px 20px 20px; user-select: text; -webkit-user-select: text; }
+      #ideas h2 { margin: 0 0 6px; font-size: 22px; padding-right: 36px; }
+      #ideas .intro { margin: 0 0 12px; color: #555; font-size: 15px; line-height: 1.4; }
+      #ideas label { display: block; font-size: 14px; color: #555; margin: 10px 0 4px; }
+      #ideas input, #ideas textarea {
+        width: 100%; box-sizing: border-box; font: inherit; font-size: 16px; color: #222;
+        border: 1px solid #ccc; border-radius: 10px; padding: 9px 11px; background: #fafafa;
+      }
+      #ideas textarea { resize: vertical; min-height: 90px; }
+      #ideas .fila { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+      #ideas .trampa { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+      #ideas .cerrar {
+        position: absolute; top: 12px; right: 12px; width: 34px; height: 34px; border: 0; border-radius: 50%; background: #eee; font-size: 16px;
+      }
+      #ideas .enviar {
+        width: 100%; margin-top: 12px; padding: 12px; border: 0; border-radius: 12px; font-size: 16px; font-weight: bold;
+        color: #fff; background: #43a047;
+      }
+      #ideas .enviar:disabled { opacity: 0.6; cursor: wait; }
+      #ideas .estado { min-height: 1em; margin: 10px 0 0; font-size: 14px; color: #2e7d32; }
+      #ideas .estado.error { color: #c62828; }
+      #ideas .gracias { text-align: center; }
+      #ideas .gracias .icono { font-size: 44px; margin: 6px 0 8px; }
+      @media (max-width: 420px) { #ideas .fila { grid-template-columns: 1fr; } }
+
       /* Celular acostado: dos columnas de ajustes y los botones en una sola fila */
       @media (orientation: landscape) and (max-height: 500px) {
         #panel {
           padding: 8px max(12px, env(safe-area-inset-right)) 8px max(12px, env(safe-area-inset-left));
         }
         #panel .tarjeta { width: min(860px, 100%); border-radius: 16px; }
-        #panel h2 { font-size: 18px; padding: 10px 18px 2px; }
+        #panel h2 { font-size: 18px; }
+        #panel .encabezado { padding: 10px 18px 4px; }
         #panel .campos { display: grid; grid-template-columns: 1fr 1fr; column-gap: 28px; padding: 0 18px; }
         #panel h3 { grid-column: 1 / -1; margin: 10px 0 0; font-size: 16px; }
         #panel .campo { padding: 7px 0; font-size: 16px; }
@@ -86,23 +128,29 @@
       body.movil #marcador { font-size: 20px; top: 72px; right: 12px; }
       body.movil #mensaje { font-size: 28px; }
       body.movil #mensaje small { font-size: 16px; }
+      /* El tamaño se adapta a la pantalla: más chicos con el celular acostado */
+      :root { --palanca: clamp(84px, 26vmin, 140px); --salto: clamp(60px, 18vmin, 96px); --orilla: clamp(12px, 4vmin, 28px); }
       #palanca {
-        position: fixed; left: calc(24px + env(safe-area-inset-left)); bottom: calc(24px + env(safe-area-inset-bottom));
-        width: 130px; height: 130px; border-radius: 50%; touch-action: none;
-        background: rgba(255, 255, 255, 0.2); border: 3px solid rgba(255, 255, 255, 0.6);
+        position: fixed; z-index: 2; touch-action: none; border-radius: 50%;
+        left: calc(var(--orilla) + env(safe-area-inset-left)); bottom: calc(var(--orilla) + env(safe-area-inset-bottom));
+        width: var(--palanca); height: var(--palanca);
+        background: rgba(0, 0, 0, 0.25); border: 3px solid rgba(255, 255, 255, 0.8);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
       }
       #bolita {
-        position: absolute; left: 50%; top: 50%; width: 60px; height: 60px; margin: -30px 0 0 -30px;
-        border-radius: 50%; background: rgba(255, 255, 255, 0.85); box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+        position: absolute; left: 27%; top: 27%; width: 46%; height: 46%;
+        border-radius: 50%; background: rgba(255, 255, 255, 0.92); box-shadow: 0 3px 8px rgba(0, 0, 0, 0.35);
         transition: transform 0.15s; pointer-events: none;
       }
       #palanca.activa #bolita { transition: none; }
       #botonSalto {
-        position: fixed; right: calc(28px + env(safe-area-inset-right)); bottom: calc(36px + env(safe-area-inset-bottom));
-        width: 96px; height: 96px; border-radius: 50%; font-size: 40px; touch-action: none;
-        background: rgba(255, 255, 255, 0.3); border: 3px solid rgba(255, 255, 255, 0.7);
+        position: fixed; z-index: 2; touch-action: none; border-radius: 50%; padding: 0;
+        right: calc(var(--orilla) + env(safe-area-inset-right)); bottom: calc(var(--orilla) + env(safe-area-inset-bottom));
+        width: var(--salto); height: var(--salto); font-size: calc(var(--salto) * 0.42);
+        background: rgba(0, 0, 0, 0.25); border: 3px solid rgba(255, 255, 255, 0.8);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
       }
-      #botonSalto:active { transform: scale(0.92); background: rgba(255, 255, 255, 0.5); }
+      #botonSalto:active { transform: scale(0.92); background: rgba(255, 255, 255, 0.4); }
       .tactil, #botonAjustes { -webkit-user-select: none; -webkit-touch-callout: none; -webkit-tap-highlight-color: transparent; }
     </style>
   </head>
@@ -119,7 +167,10 @@
     <button id="botonAjustes" aria-label="Ajustes">⚙️</button>
     <div id="panel" hidden>
       <div class="tarjeta">
-        <h2>⚙️ Ajustes del juego</h2>
+        <div class="encabezado">
+          <h2>⚙️ Ajustes del juego</h2>
+          <button id="botonIdeas" type="button">💡 Mándanos una idea</button>
+        </div>
         <div class="campos"></div>
         <div class="botones">
           <button data-accion="aplicar">✅ Aplicar</button>
@@ -129,6 +180,37 @@
         </div>
       </div>
     </div>
+
+    <dialog id="ideas" aria-labelledby="tituloIdeas">
+      <form id="formIdeas" novalidate>
+        <button type="button" class="cerrar" data-cerrar aria-label="Cerrar">✕</button>
+        <h2 id="tituloIdeas">💡 ¿Qué le agregarías al juego?</h2>
+        <p class="intro">Cuéntanos qué te gustaría ver: un obstáculo, un color, un poder, un nivel nuevo…</p>
+        <label for="textoIdea">Tu idea *</label>
+        <textarea id="textoIdea" name="mejora" rows="4" maxlength="2000" required
+          placeholder="Ej. que haya un trampolín que te lance hasta las nubes"></textarea>
+        <div class="fila">
+          <div>
+            <label for="nombreIdea">Nombre</label>
+            <input id="nombreIdea" name="nombre" type="text" autocomplete="name" maxlength="80" />
+          </div>
+          <div>
+            <label for="correoIdea">Correo (si quieres respuesta)</label>
+            <input id="correoIdea" name="email" type="email" autocomplete="email" maxlength="120" />
+          </div>
+        </div>
+        <!-- Trampa anti-spam: las personas no la ven; los robots la llenan -->
+        <input type="text" name="_honey" class="trampa" tabindex="-1" autocomplete="off" aria-hidden="true" />
+        <p id="estadoIdeas" class="estado" role="status" aria-live="polite"></p>
+        <button type="submit" class="enviar">Enviar idea ✨</button>
+      </form>
+      <div id="graciasIdeas" class="gracias" hidden>
+        <div class="icono">🧱</div>
+        <h2>¡Gracias por tu idea!</h2>
+        <p>Nay y papá la van a leer.</p>
+        <button type="button" class="enviar" data-cerrar>Seguir jugando</button>
+      </div>
+    </dialog>
 
     <div id="palanca" class="tactil"><div id="bolita"></div></div>
     <button id="botonSalto" class="tactil" aria-label="Saltar">⬆️</button>

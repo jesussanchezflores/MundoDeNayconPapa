@@ -9,6 +9,7 @@ import { iniciarMusica } from "./musica.js";
 import { crearObby, moverObstaculos, revisarJugador, reiniciarCarrera } from "./obby.js";
 import { aplicarAjustesGuardados, crearPanel, panelAbierto } from "./ajustes.js";
 import { esMovil } from "./dispositivo.js";
+import { crearFormularioDeIdeas } from "./ideas.js";
 
 // Primero, lo que se haya elegido en el panel de ajustes ⚙️
 aplicarAjustesGuardados();
@@ -27,11 +28,17 @@ crearObby(escena);
 const jugador = new Personaje(escena, new THREE.Vector3(0, 0, 0));
 const camara = new Camara(pintor.domElement);
 crearPanel({ alReiniciar: () => reiniciarCarrera(jugador) });
+crearFormularioDeIdeas();
 
-addEventListener("resize", () => {
+// Si cambia el tamaño de la ventana o se gira el celular, ajustamos el dibujo
+function ajustarPantalla() {
   pintor.setSize(innerWidth, innerHeight);
   camara.ajustarPantalla();
-});
+  scrollTo(0, 0);
+}
+addEventListener("resize", ajustarPantalla);
+addEventListener("orientationchange", () => setTimeout(ajustarPantalla, 300));
+visualViewport?.addEventListener("resize", ajustarPantalla);
 
 // 🔊 El sonido arranca con la primera tecla, clic o toque; la M lo silencia
 function activarSonido() {

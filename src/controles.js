@@ -7,7 +7,7 @@ let botonSaltoApretado = false;
 let saltosNuevos = 0; // cuántas veces se apretó "saltar" desde la última revisión
 
 addEventListener("keydown", (e) => {
-  if (e.target.closest?.("#panel")) return; // escribiendo en los ajustes, no jugando
+  if (e.target.closest?.("#panel, #ideas")) return; // escribiendo en los ajustes o en una idea, no jugando
   teclas.add(e.code);
   if (e.code === "Space" && !e.repeat) saltosNuevos++;
   // Que las flechas y el espacio no muevan la página
@@ -40,7 +40,7 @@ function crearControlesTactiles() {
   const base = document.getElementById("palanca");
   const bolita = document.getElementById("bolita");
   const botonSalto = document.getElementById("botonSalto");
-  const radio = 50; // qué tanto se puede alejar la bolita del centro
+  let radio = 50; // qué tanto se puede alejar la bolita del centro (depende del tamaño de la palanca)
   let dedo = null;
   let centro;
 
@@ -57,13 +57,14 @@ function crearControlesTactiles() {
     palanca.x = Math.abs(dx) > radio * 0.15 ? dx / radio : 0;
     palanca.y = Math.abs(dy) > radio * 0.15 ? -dy / radio : 0;
   };
-  const soltar = (e) => {
-    if (e.pointerId !== dedo) return;
+  const soltarTodo = () => {
     dedo = null;
     palanca.x = palanca.y = 0;
     bolita.style.transform = "";
     base.classList.remove("activa");
+    botonSaltoApretado = false;
   };
+  const soltar = (e) => e.pointerId === dedo && soltarTodo();
 
   base.addEventListener("pointerdown", (e) => {
     dedo = e.pointerId;
@@ -71,8 +72,12 @@ function crearControlesTactiles() {
     base.classList.add("activa");
     const caja = base.getBoundingClientRect();
     centro = { x: caja.left + caja.width / 2, y: caja.top + caja.height / 2 };
+    radio = caja.width * 0.38;
     mover(e);
   });
+  // Al girar el celular o cambiar de app, la palanca regresa al centro
+  addEventListener("orientationchange", soltarTodo);
+  document.addEventListener("visibilitychange", soltarTodo);
   base.addEventListener("pointermove", (e) => e.pointerId === dedo && mover(e));
   base.addEventListener("pointerup", soltar);
   base.addEventListener("pointercancel", soltar);
